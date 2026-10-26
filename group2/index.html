@@ -447,7 +447,7 @@ button { -webkit-tap-highlight-color: transparent; }
 <div style="padding: 16px 24px 0 24px; display: flex; flex-direction: column; gap: 14px">
 <div style="display: flex; flex-direction: column; gap: 8px">
 <label for="olm-rem-name" style="font-size: 15px; font-weight: 600; color: #4e5968">받는 사람 이름</label>
-<input id="olm-rem-name" type="text" autoComplete="off" value="{{recipient}}" onChange="{{onRecipient}}" placeholder="영문 이름 (예: Hong Gildong)" style="height: 54px; box-sizing: border-box; border: 1px solid #d1d6db; border-radius: 12px; padding: 0 16px; font-family: inherit; font-size: 17px; color: #191f28; background: #ffffff">
+<input id="olm-rem-name" type="text" autoComplete="off" value="{{recipient}}" onChange="{{onRecipient}}" placeholder="이름 (예: 홍길동, Hong Gildong)" style="height: 54px; box-sizing: border-box; border: 1px solid #d1d6db; border-radius: 12px; padding: 0 16px; font-family: inherit; font-size: 17px; color: #191f28; background: #ffffff">
 </div>
 <div style="display: flex; flex-direction: column; gap: 8px">
 <label for="olm-rem-iban" style="font-size: 15px; font-weight: 600; color: #4e5968">받는 계좌 / IBAN</label>
@@ -594,24 +594,30 @@ button { -webkit-tap-highlight-color: transparent; }
 <p style="margin: 10px 0 0 0; height: 52px; font-size: 17px; line-height: 26px; color: #4e5968">다른 은행 계좌의 잔액을 확인하려면 오픈뱅킹 연결이 필요합니다.</p>
 </div>
 <ul style="list-style: none; margin: 28px 24px 0 24px; padding: 0; border: 1px solid #e5e8eb; border-radius: 16px">
-<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px">
-<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center">
+<button type="button" onClick="{{toggleAll}}" aria-pressed="{{ckAll.pressed}}" style="width: 100%; min-height: 60px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; gap: 12px; font-family: inherit; text-align: left; cursor: pointer">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="{{ckAll.fill}}" stroke="{{ckAll.stroke}}" stroke-width="1.8"></circle><path d="M8 12.3l2.8 2.8L16 9.8" fill="none" stroke="{{ckAll.mark}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 700; color: #191f28">전체 동의</span>
+</button>
+</li>
+<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #f2f4f6">
+<button type="button" onClick="{{toggle.A1}}" aria-pressed="{{ck.A1.pressed}}" aria-label="오픈뱅킹 서비스 이용 동의 체크" style="flex: none; width: 44px; height: 44px; margin: 0 -10px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="{{ck.A1.fill}}" stroke="{{ck.A1.stroke}}" stroke-width="1.8"></circle><path d="M8 12.3l2.8 2.8L16 9.8" fill="none" stroke="{{ck.A1.mark}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
 <span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">오픈뱅킹 서비스 이용 동의</span>
 <button type="button" onClick="{{openTerms.A1}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
 </li>
 <li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #f2f4f6">
-<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<button type="button" onClick="{{toggle.A2}}" aria-pressed="{{ck.A2.pressed}}" aria-label="계좌 정보 조회 동의 체크" style="flex: none; width: 44px; height: 44px; margin: 0 -10px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="{{ck.A2.fill}}" stroke="{{ck.A2.stroke}}" stroke-width="1.8"></circle><path d="M8 12.3l2.8 2.8L16 9.8" fill="none" stroke="{{ck.A2.mark}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
 <span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">계좌 정보 조회 동의</span>
 <button type="button" onClick="{{openTerms.A2}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
 </li>
 <li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #f2f4f6">
-<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<button type="button" onClick="{{toggle.A3}}" aria-pressed="{{ck.A3.pressed}}" aria-label="개인정보 제3자 제공 동의 체크" style="flex: none; width: 44px; height: 44px; margin: 0 -10px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="{{ck.A3.fill}}" stroke="{{ck.A3.stroke}}" stroke-width="1.8"></circle><path d="M8 12.3l2.8 2.8L16 9.8" fill="none" stroke="{{ck.A3.mark}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
 <span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">개인정보 제3자 제공 동의</span>
 <button type="button" onClick="{{openTerms.A3}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
 </li>
 </ul>
 <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff; display: flex; flex-direction: column; gap: 8px">
-<button type="button" onClick="{{reqAgree}}" style="height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">동의하고 연결하기</button>
+<button type="button" onClick="{{reqAgree}}" disabled="{{reqDisabled}}" style="height: 56px; border: 0; border-radius: 14px; background: {{reqBtnBg}}; color: {{reqBtnFg}}; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">동의하고 연결하기</button>
 <button type="button" onClick="{{reqBack}}" style="height: 56px; border: 0; border-radius: 14px; background: #f2f4f6; color: #4e5968; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">취소</button>
 </div>
 </div>
@@ -632,24 +638,30 @@ button { -webkit-tap-highlight-color: transparent; }
 <p style="margin: 10px 0 0 0; height: 52px; font-size: 17px; line-height: 26px; color: #4e5968">정확한 예상액 계산을 위해 다른 금융사의 연금 가입 이력이 필요합니다.</p>
 </div>
 <ul style="list-style: none; margin: 28px 24px 0 24px; padding: 0; border: 1px solid #e5e8eb; border-radius: 16px">
-<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px">
-<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center">
+<button type="button" onClick="{{toggleAll}}" aria-pressed="{{ckAll.pressed}}" style="width: 100%; min-height: 60px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; gap: 12px; font-family: inherit; text-align: left; cursor: pointer">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="{{ckAll.fill}}" stroke="{{ckAll.stroke}}" stroke-width="1.8"></circle><path d="M8 12.3l2.8 2.8L16 9.8" fill="none" stroke="{{ckAll.mark}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 700; color: #191f28">전체 동의</span>
+</button>
+</li>
+<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #f2f4f6">
+<button type="button" onClick="{{toggle.B1}}" aria-pressed="{{ck.B1.pressed}}" aria-label="타 금융사 연금 정보 연결 동의 체크" style="flex: none; width: 44px; height: 44px; margin: 0 -10px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="{{ck.B1.fill}}" stroke="{{ck.B1.stroke}}" stroke-width="1.8"></circle><path d="M8 12.3l2.8 2.8L16 9.8" fill="none" stroke="{{ck.B1.mark}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
 <span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">타 금융사 연금 정보 연결 동의</span>
 <button type="button" onClick="{{openTerms.B1}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
 </li>
 <li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #f2f4f6">
-<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<button type="button" onClick="{{toggle.B2}}" aria-pressed="{{ck.B2.pressed}}" aria-label="가입·납입 이력 수집 동의 체크" style="flex: none; width: 44px; height: 44px; margin: 0 -10px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="{{ck.B2.fill}}" stroke="{{ck.B2.stroke}}" stroke-width="1.8"></circle><path d="M8 12.3l2.8 2.8L16 9.8" fill="none" stroke="{{ck.B2.mark}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
 <span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">가입·납입 이력 수집 동의</span>
 <button type="button" onClick="{{openTerms.B2}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
 </li>
 <li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #f2f4f6">
-<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<button type="button" onClick="{{toggle.B3}}" aria-pressed="{{ck.B3.pressed}}" aria-label="개인정보 제3자 제공 동의 체크" style="flex: none; width: 44px; height: 44px; margin: 0 -10px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="{{ck.B3.fill}}" stroke="{{ck.B3.stroke}}" stroke-width="1.8"></circle><path d="M8 12.3l2.8 2.8L16 9.8" fill="none" stroke="{{ck.B3.mark}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
 <span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">개인정보 제3자 제공 동의</span>
 <button type="button" onClick="{{openTerms.B3}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
 </li>
 </ul>
 <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff; display: flex; flex-direction: column; gap: 8px">
-<button type="button" onClick="{{reqAgree}}" style="height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">동의하고 조회하기</button>
+<button type="button" onClick="{{reqAgree}}" disabled="{{reqDisabled}}" style="height: 56px; border: 0; border-radius: 14px; background: {{reqBtnBg}}; color: {{reqBtnFg}}; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">동의하고 조회하기</button>
 <button type="button" onClick="{{reqBack}}" style="height: 56px; border: 0; border-radius: 14px; background: #f2f4f6; color: #4e5968; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">취소</button>
 </div>
 </div>
@@ -670,7 +682,13 @@ button { -webkit-tap-highlight-color: transparent; }
 <p style="margin: 10px 0 0 0; height: 52px; font-size: 17px; line-height: 26px; color: #4e5968">쿠폰을 받으려면 해외송금 출금 계좌를 올머니 입출금 계좌로 변경해야 합니다.</p>
 </div>
 <ul style="list-style: none; margin: 28px 24px 0 24px; padding: 0; border: 1px solid #e5e8eb; border-radius: 16px">
-<li style="min-height: 60px; padding: 10px 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 2px">
+<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center">
+<button type="button" onClick="{{toggleAll}}" aria-pressed="{{ckAll.pressed}}" style="width: 100%; min-height: 60px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; gap: 12px; font-family: inherit; text-align: left; cursor: pointer">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="{{ckAll.fill}}" stroke="{{ckAll.stroke}}" stroke-width="1.8"></circle><path d="M8 12.3l2.8 2.8L16 9.8" fill="none" stroke="{{ckAll.mark}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 700; color: #191f28">전체 동의</span>
+</button>
+</li>
+<li style="min-height: 60px; padding: 10px 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 2px; border-top: 1px solid #f2f4f6">
 <span style="font-size: 13px; color: #4e5968">현재 출금 계좌</span>
 <span style="font-size: 15px; font-weight: 500; color: #333d4b">(주)다른은행 123-456-789</span>
 </li>
@@ -679,13 +697,13 @@ button { -webkit-tap-highlight-color: transparent; }
 <span style="font-size: 15px; font-weight: 600; color: #191f28">올머니 입출금 110-234-567</span>
 </li>
 <li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #f2f4f6">
-<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<button type="button" onClick="{{toggle.C1}}" aria-pressed="{{ck.C1.pressed}}" aria-label="쿠폰 이용 약관 동의 체크" style="flex: none; width: 44px; height: 44px; margin: 0 -10px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="{{ck.C1.fill}}" stroke="{{ck.C1.stroke}}" stroke-width="1.8"></circle><path d="M8 12.3l2.8 2.8L16 9.8" fill="none" stroke="{{ck.C1.mark}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
 <span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">쿠폰 이용 약관 동의</span>
 <button type="button" onClick="{{openTerms.C1}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
 </li>
 </ul>
 <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff; display: flex; flex-direction: column; gap: 8px">
-<button type="button" onClick="{{reqAgree}}" style="height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">계좌 변경하기</button>
+<button type="button" onClick="{{reqAgree}}" disabled="{{reqDisabled}}" style="height: 56px; border: 0; border-radius: 14px; background: {{reqBtnBg}}; color: {{reqBtnFg}}; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">계좌 변경하기</button>
 <button type="button" onClick="{{reqBack}}" style="height: 56px; border: 0; border-radius: 14px; background: #f2f4f6; color: #4e5968; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">취소</button>
 </div>
 </div>
@@ -726,12 +744,12 @@ button { -webkit-tap-highlight-color: transparent; }
 
 <sc-if value="{{popVisible}}" hint-placeholder-val="{{ false }}">
 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4)"></div>
-<div role="dialog" aria-modal="true" aria-labelledby="olm-pop-title" style="position: absolute; left: 12px; right: 12px; bottom: 28px; height: 222px; box-sizing: border-box; background: #ffffff; border-radius: 24px; padding: 12px 22px 16px 22px; display: flex; flex-direction: column; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16)">
-<button type="button" aria-label="닫기" onClick="{{closePop}}" style="flex: none; align-self: flex-end; width: 44px; height: 44px; margin-right: -12px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #4e5968; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg></button>
-<h2 id="olm-pop-title" style="margin: 8px 0 0 0; font-size: 20px; line-height: 28px; font-weight: 700; letter-spacing: -0.5px; color: #191f28; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{popTitle}}</h2>
+<div role="dialog" aria-modal="true" aria-labelledby="olm-pop-title" style="position: absolute; left: 12px; right: 12px; bottom: 28px; height: 250px; box-sizing: border-box; background: #ffffff; border-radius: 24px; padding: 28px 22px 16px 22px; display: flex; flex-direction: column; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16)">
+<h2 id="olm-pop-title" style="margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; letter-spacing: -0.5px; color: #191f28; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{popTitle}}</h2>
 <p style="margin: 8px 0 0 0; height: 26px; font-size: 17px; line-height: 26px; color: #4e5968; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{popDesc}}</p>
 <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px">
 <button type="button" onClick="{{popGo}}" style="height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">{{popCta}}</button>
+<button type="button" onClick="{{closePop}}" style="height: 56px; border: 0; border-radius: 14px; background: #f2f4f6; color: #4e5968; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">닫기</button>
 </div>
 </div>
 </sc-if>
@@ -801,8 +819,19 @@ function proc(node, scope) {
   procChildren(node, scope).forEach(function (c) { el.appendChild(c); });
   return [el];
 }
-var comp = null, app = null, tpl = null, RENDERING = false;
+var comp = null, app = null, tpl = null, RENDERING = false, COMPOSING = false, RENDER_PENDING = false;
+// IME (Korean etc.): never rebuild the DOM mid-composition, or syllables break apart.
+document.addEventListener('compositionstart', function () { COMPOSING = true; }, true);
+document.addEventListener('compositionend', function (e) {
+  var t = e.target;
+  setTimeout(function () {
+    COMPOSING = false;
+    if (t && t.isConnected && t.tagName === 'INPUT') { t.dispatchEvent(new Event('input', { bubbles: true })); }
+    if (RENDER_PENDING) { RENDER_PENDING = false; render(); }
+  }, 0);
+}, true);
 function render() {
+  if (COMPOSING) { RENDER_PENDING = true; return; }
   var act = document.activeElement, focusId = act && act.id ? act.id : null, selEnd = null, oldLen = null;
   if (focusId && typeof act.selectionEnd === 'number') { selEnd = act.selectionEnd; oldLen = act.value.length; }
   var frag = document.createDocumentFragment();
@@ -839,7 +868,7 @@ class Component extends DCLogic {
       var m = /[?&]task=([123])(?:&|$)/.exec((window.location && window.location.search) || '');
       if (m) { task = parseInt(m[1], 10); }
     } catch (e) {}
-    this.state = { hidden: null, screen: (props && props.startScreen) || 'home', task: task, amount: '', payAcct: null, monthly: null, years: null, penAcct: null, recipient: '', iban: '', country: null, remAmount: '', remAcct: null, popOpen: null, shown: {}, reqReturn: 'home', terms: null, toast: false, paidAt: null };
+    this.state = { hidden: null, screen: (props && props.startScreen) || 'home', task: task, amount: '', payAcct: null, monthly: null, years: null, penAcct: null, recipient: '', iban: '', country: null, remAmount: '', remAcct: null, popOpen: null, shown: {}, reqReturn: 'home', agree: {}, terms: null, toast: false, paidAt: null };
   }
   componentDidUpdate(prev) {
     if (prev.startScreen !== this.props.startScreen && this.props.startScreen) {
@@ -999,7 +1028,7 @@ class Component extends DCLogic {
     var trigMap = TRIG[String(this.props.group ?? '0')] || {};
     var inTrig = this.inputTrigInfo();
     var nav = function (target, extra) {
-      var st = Object.assign({ screen: target, popOpen: null, terms: null }, extra || {});
+      var st = Object.assign({ screen: target, popOpen: null, terms: null, agree: {} }, extra || {});
       var p = trigMap[target];
       var shown = self.state.shown || {};
       var isInput = !!(inTrig && target === inTrig.screen);
@@ -1083,6 +1112,24 @@ class Component extends DCLogic {
     var arrival = arrA.getMonth() === arrB.getMonth()
       ? (arrA.getMonth() + 1) + '월 ' + arrA.getDate() + '~' + arrB.getDate() + '일'
       : this.md(arrA) + '~' + this.md(arrB);
+    var AGREE_KEYS = { reqA: ['A1', 'A2', 'A3'], reqB: ['B1', 'B2', 'B3'], reqC: ['C1'] };
+    var agree = this.state.agree || {};
+    var reqKeys = AGREE_KEYS[screen] || [];
+    var allAgreed = reqKeys.length > 0 && reqKeys.every(function (k) { return !!agree[k]; });
+    var ckStyle = function (on) {
+      return on
+        ? { fill: accent, stroke: accent, mark: '#ffffff', pressed: 'true' }
+        : { fill: '#ffffff', stroke: '#b0b8c1', mark: '#b0b8c1', pressed: 'false' };
+    };
+    var ck = {}, toggle = {};
+    ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1'].forEach(function (k) {
+      ck[k] = ckStyle(!!agree[k]);
+      toggle[k] = function () {
+        var a = Object.assign({}, self.state.agree || {});
+        a[k] = !a[k];
+        self.setState({ agree: a });
+      };
+    });
     var RESET = { amount: '', payAcct: null, monthly: null, years: null, penAcct: null, recipient: '', iban: '', country: null, remAmount: '', remAcct: null };
     return {
       accent: accent,
@@ -1125,12 +1172,23 @@ class Component extends DCLogic {
       popDesc: pop ? pop.desc : '',
       popCta: pop ? pop.cta : '',
       closePop: function () { self.setState({ popOpen: null }); },
-      popGo: function () { if (popKey) { self.setState({ popOpen: null, screen: 'req' + popKey, reqReturn: screen }); } },
+      popGo: function () { if (popKey) { self.setState({ popOpen: null, screen: 'req' + popKey, reqReturn: screen, agree: {} }); } },
       isReqA: screen === 'reqA',
       isReqB: screen === 'reqB',
       isReqC: screen === 'reqC',
       reqBack: function () { nav(self.state.reqReturn || 'home'); },
-      reqAgree: function () { var k = screen.slice(3); self.setState({ screen: 'res' + k, terms: null }); },
+      reqAgree: function () { if (!allAgreed) { return; } var k = screen.slice(3); self.setState({ screen: 'res' + k, terms: null, agree: {} }); },
+      ck: ck,
+      toggle: toggle,
+      ckAll: ckStyle(allAgreed),
+      toggleAll: function () {
+        var a = Object.assign({}, self.state.agree || {});
+        reqKeys.forEach(function (k) { a[k] = !allAgreed; });
+        self.setState({ agree: a });
+      },
+      reqDisabled: !allAgreed,
+      reqBtnBg: allAgreed ? accent : '#e5e8eb',
+      reqBtnFg: allAgreed ? '#ffffff' : '#8b95a1',
       isRes: !!res,
       resTitle: res ? res.title : '',
       resDesc: res ? res.desc : '',
