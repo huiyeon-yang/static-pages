@@ -1,0 +1,1227 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>올머니</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+html, body { margin: 0; height: 100%; background: #e9ecef; }
+#stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+#app { width: 390px; height: 844px; flex: none; border-radius: 44px; overflow: hidden; box-shadow: 0 20px 60px rgba(25, 31, 40, 0.18); transform-origin: center center; background: #ffffff; }
+#app.phone { border-radius: 0; box-shadow: none; }
+button { -webkit-tap-highlight-color: transparent; }
+</style>
+</head>
+<body>
+<div id="stage"><div id="app"></div></div>
+<template id="tpl">
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; box-sizing: border-box; background: #ffffff; font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif; color: #191f28; word-break: keep-all; overflow-wrap: break-word; -webkit-font-smoothing: antialiased">
+
+<sc-if value="{{isHome}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #f2f4f6">
+<div style="display: flex; flex-direction: column; gap: 12px; padding: 52px 16px 120px 16px; box-sizing: border-box">
+
+<header style="height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px">
+<div style="display: flex; align-items: center; gap: 8px">
+<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="0" y="0" width="26" height="26" rx="8" fill="{{accent}}"></rect><circle cx="13" cy="13" r="6" fill="none" stroke="#ffffff" stroke-width="3"></circle><circle cx="17.6" cy="8.4" r="2" fill="#ffffff"></circle></svg>
+<span style="font-size: 20px; font-weight: 700; letter-spacing: -0.4px; color: #191f28">올머니</span>
+</div>
+<div style="display: flex; align-items: center; gap: 4px">
+<button type="button" aria-label="알림" onClick="{{toast}}" style="width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; position: relative; color: #4e5968; cursor: pointer">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"></path><path d="M10 21a2 2 0 0 0 4 0"></path></svg>
+<span style="position: absolute; top: 10px; right: 11px; width: 7px; height: 7px; border-radius: 50%; background: #f04452; border: 1.5px solid #f2f4f6"></span>
+</button>
+<button type="button" aria-label="전체 메뉴" onClick="{{toast}}" style="width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #4e5968; cursor: pointer">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4.5 7h15"></path><path d="M4.5 12h15"></path><path d="M4.5 17h15"></path></svg>
+</button>
+</div>
+</header>
+
+<section aria-label="보유 계좌 잔액" style="background: #ffffff; border-radius: 20px; padding: 22px 20px 20px 20px; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="width: 28px; height: 28px; border-radius: 50%; background: {{accentTint}}; color: {{accent}}; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">홍</span>
+<span style="font-size: 15px; font-weight: 600; color: #4e5968">홍길동님의 계좌 잔액</span>
+</div>
+<button type="button" onClick="{{toggleHide}}" style="height: 32px; padding: 0 10px; border: 0; border-radius: 8px; background: #f2f4f6; color: #4e5968; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer">{{hideLabel}}</button>
+</div>
+
+<div style="margin-top: 14px; height: 40px; display: flex; align-items: baseline; gap: 2px; font-variant-numeric: tabular-nums">
+<sc-if value="{{showBalance}}" hint-placeholder-val="{{ true }}">
+<span style="font-size: 32px; font-weight: 700; letter-spacing: -0.8px; color: #191f28">3,482,150</span><span style="font-size: 24px; font-weight: 700; color: #191f28">원</span>
+</sc-if>
+<sc-if value="{{hidden}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 24px; font-weight: 700; color: #333d4b; letter-spacing: 1px">잔액 숨김</span>
+</sc-if>
+</div>
+
+<button type="button" onClick="{{toast}}" style="margin-top: 6px; padding: 0; border: 0; background: transparent; display: flex; align-items: center; gap: 4px; font-family: inherit; font-size: 13px; color: #4e5968; min-height: 24px; cursor: pointer; text-align: left">
+<span>올머니 계좌 3개</span>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</button>
+
+<div style="margin-top: 18px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<button type="button" onClick="{{toast}}" style="height: 48px; border: 0; border-radius: 12px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 16px; font-weight: 600; cursor: pointer">송금</button>
+<button type="button" onClick="{{toast}}" style="height: 48px; border: 0; border-radius: 12px; background: #f2f4f6; color: #333d4b; font-family: inherit; font-size: 16px; font-weight: 600; cursor: pointer">거래내역</button>
+</div>
+</section>
+
+<section aria-label="자주 쓰는 서비스" style="background: #ffffff; border-radius: 20px; padding: 20px 8px 8px 8px; display: flex; flex-direction: column">
+<h2 style="margin: 0 12px 8px 12px; font-size: 20px; font-weight: 700; letter-spacing: -0.3px; color: #191f28">자주 쓰는 서비스</h2>
+
+<button type="button" onClick="{{goPay1}}" style="width: 100%; border: 0; background: transparent; font-family: inherit; color: inherit; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; min-height: 48px">
+<span style="flex: none; width: 44px; height: 44px; border-radius: 14px; background: {{accentTint}}; color: {{accent}}; display: flex; align-items: center; justify-content: center">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="14.5" height="11" rx="2.2"></rect><path d="M2.5 9.5h14.5"></path><path d="M20.5 10.5l-2.6 4.2h3.2l-2.6 4.3"></path></svg>
+</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 17px; font-weight: 600; color: #191f28; letter-spacing: -0.2px">카드 대금 즉시결제</span>
+<span style="font-size: 15px; color: #4e5968">결제 예정 <span style="font-weight: 600; color: #333d4b; font-variant-numeric: tabular-nums">320,000원</span> · {{dueDate}}</span>
+</span>
+<svg style="flex: none; color: #b0b8c1" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</button>
+
+<button type="button" onClick="{{goPen1}}" style="width: 100%; border: 0; background: transparent; font-family: inherit; color: inherit; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; min-height: 48px">
+<span style="flex: none; width: 44px; height: 44px; border-radius: 14px; background: #fff1e3; color: #d4690f; display: flex; align-items: center; justify-content: center">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5v-8"></path><path d="M12 12.5c0-3.6-2.6-6-6.5-6 0 3.6 2.6 6 6.5 6z"></path><path d="M12 14.5c0-3.3 2.4-5.5 6.5-5.5 0 3.3-2.4 5.5-6.5 5.5z"></path><path d="M6.5 20.5h11"></path></svg>
+</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 17px; font-weight: 600; color: #191f28; letter-spacing: -0.2px">연금 상품</span>
+<span style="font-size: 15px; color: #4e5968">연금저축·IRP 비교하고 가입하기</span>
+</span>
+<svg style="flex: none; color: #b0b8c1" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</button>
+
+<button type="button" onClick="{{goRem1}}" style="width: 100%; border: 0; background: transparent; font-family: inherit; color: inherit; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; min-height: 48px">
+<span style="flex: none; width: 44px; height: 44px; border-radius: 14px; background: #eaf0fc; color: #2f5bd0; display: flex; align-items: center; justify-content: center">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M3.5 12h17"></path><path d="M12 3.5c2.4 2.5 3.5 5.3 3.5 8.5s-1.1 6-3.5 8.5c-2.4-2.5-3.5-5.3-3.5-8.5s1.1-6 3.5-8.5z"></path></svg>
+</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 17px; font-weight: 600; color: #191f28; letter-spacing: -0.2px">해외송금</span>
+<span style="font-size: 15px; color: #4e5968">가족·유학 송금을 앱에서 바로</span>
+</span>
+<svg style="flex: none; color: #b0b8c1" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</button>
+</section>
+
+<button type="button" onClick="{{toast}}" style="width: 100%; border: 0; font-family: inherit; color: inherit; text-align: left; cursor: pointer; background: #ffffff; border-radius: 20px; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<span style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 15px; color: #4e5968">올머니 포인트</span>
+<span style="font-size: 20px; font-weight: 700; color: #191f28; letter-spacing: -0.4px; font-variant-numeric: tabular-nums">2,450P</span>
+</span>
+<span style="display: flex; align-items: center; gap: 2px; font-size: 13px; color: #4e5968">혜택 보기
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</span>
+</button>
+
+</div>
+
+<nav aria-label="하단 메뉴" style="position: absolute; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #e5e8eb; padding: 6px 8px 34px 8px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0">
+<button type="button" onClick="{{toast}}" style="height: 50px; border: 0; background: transparent; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #6b7684">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5L12 4l8.5 5.5"></path><path d="M6 10.5v7"></path><path d="M10 10.5v7"></path><path d="M14 10.5v7"></path><path d="M18 10.5v7"></path><path d="M3.5 20h17"></path></svg>
+<span style="font-size: 12px; font-weight: 500">뱅크</span>
+</button>
+<button type="button" onClick="{{toast}}" style="height: 50px; border: 0; background: transparent; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #6b7684">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H17v3"></path><rect x="4" y="7.5" width="16.5" height="12" rx="2.5"></rect><path d="M16 13.5h1.5"></path></svg>
+<span style="font-size: 12px; font-weight: 500">페이</span>
+</button>
+<button type="button" onClick="{{toast}}" style="height: 50px; border: 0; background: transparent; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #6b7684">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5"></rect><path d="M3 10h18"></path><path d="M7 14.5h4"></path></svg>
+<span style="font-size: 12px; font-weight: 500">카드</span>
+</button>
+<button type="button" aria-current="page" onClick="{{toast}}" style="height: 50px; border: 0; background: transparent; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: {{accent}}">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5L12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"></path></svg>
+<span style="font-size: 12px; font-weight: 700">홈</span>
+</button>
+</nav>
+</div>
+</sc-if>
+
+<sc-if value="{{isPay1}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; display: flex; flex-direction: column; padding-top: 44px; box-sizing: border-box">
+<header style="height: 52px; position: relative; display: flex; align-items: center; padding: 0 6px; flex: none">
+<button type="button" aria-label="뒤로가기" onClick="{{goBack}}" style="width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #191f28; cursor: pointer; position: relative; z-index: 1">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 12H5"></path><path d="M11 5.5L4.5 12l6.5 6.5"></path></svg>
+</button>
+<h1 style="position: absolute; left: 60px; right: 60px; margin: 0; text-align: center; font-size: 17px; font-weight: 600; color: #191f28">카드 대금 즉시결제</h1>
+</header>
+
+<div style="padding: 28px 24px 0 24px; display: flex; flex-direction: column">
+<p style="margin: 0; font-size: 15px; font-weight: 600; color: #4e5968">이번 달 카드 이용금액</p>
+<p style="margin: 8px 0 0 0; font-size: 32px; font-weight: 700; letter-spacing: -0.8px; color: #191f28; font-variant-numeric: tabular-nums">320,000원</p>
+<p style="margin: 10px 0 0 0; font-size: 15px; line-height: 22px; color: #4e5968">결제 예정일 전에 언제든 미리 갚을 수 있어요.</p>
+</div>
+
+<div style="margin: 28px 24px 0 24px; border-top: 1px solid #e5e8eb; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0">
+<span style="font-size: 15px; color: #4e5968">결제 예정일</span>
+<span style="font-size: 17px; font-weight: 600; color: #333d4b">{{dueDate}}</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; border-top: 1px solid #f2f4f6">
+<span style="font-size: 15px; color: #4e5968; flex: none">결제 계좌</span>
+<span style="font-size: 17px; font-weight: 600; color: #333d4b; text-align: right">(주)다른은행 123-456-789</span>
+</div>
+</div>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff">
+<button type="button" onClick="{{goPay2}}" style="width: 100%; height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">즉시결제 하기</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isPay2}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; display: flex; flex-direction: column; padding-top: 44px; box-sizing: border-box">
+<header style="height: 52px; position: relative; display: flex; align-items: center; padding: 0 6px; flex: none">
+<button type="button" aria-label="뒤로가기" onClick="{{goBack}}" style="width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #191f28; cursor: pointer; position: relative; z-index: 1">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 12H5"></path><path d="M11 5.5L4.5 12l6.5 6.5"></path></svg>
+</button>
+<h1 style="position: absolute; left: 60px; right: 60px; margin: 0; text-align: center; font-size: 17px; font-weight: 600; color: #191f28">카드 대금 즉시결제</h1>
+</header>
+
+<div style="padding: 28px 24px 0 24px; display: flex; flex-direction: column">
+<label for="olm-pay-amount" style="font-size: 15px; font-weight: 600; color: #4e5968">즉시결제 금액</label>
+<div style="margin-top: 10px; display: flex; align-items: center; gap: 4px; border-bottom: 2px solid {{amountLine}}; padding-bottom: 8px">
+<input id="olm-pay-amount" type="text" inputMode="numeric" autoComplete="off" value="{{amountText}}" onChange="{{onAmount}}" placeholder="0" style="flex: 1; min-width: 0; border: 0; outline: none; background: transparent; padding: 0; font-family: inherit; font-size: 30px; font-weight: 700; letter-spacing: -0.6px; color: #191f28; font-variant-numeric: tabular-nums">
+<span style="flex: none; font-size: 30px; font-weight: 700; color: #191f28">원</span>
+</div>
+<sc-if value="{{amountOk}}" hint-placeholder-val="{{ true }}">
+<p style="margin: 10px 0 0 0; font-size: 13px; color: #4e5968">이번 달 이용금액 320,000원까지 결제할 수 있어요</p>
+</sc-if>
+<sc-if value="{{amountOver}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 10px 0 0 0; font-size: 15px; font-weight: 600; color: #d22030">이용금액 320,000원보다 많이 결제할 수 없어요</p>
+</sc-if>
+</div>
+
+<sc-if value="{{payAcctVisible}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 32px 24px 0 24px; display: flex; flex-direction: column">
+<span style="font-size: 15px; font-weight: 600; color: #4e5968">결제 계좌</span>
+<div role="group" aria-label="결제 계좌 선택" style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{payAcctList}}" as="item" hint-placeholder-count="1">
+<button type="button" onClick="{{item.pick}}" aria-pressed="{{item.pressed}}" style="width: 100%; height: 60px; box-sizing: border-box; border-radius: 14px; border: {{item.border}}; background: {{item.bg}}; padding: 0 14px; display: flex; align-items: center; gap: 12px; font-family: inherit; text-align: left; cursor: pointer">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 50%; background: {{item.iconBg}}; color: {{item.iconFg}}; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{item.letter}}</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<span style="font-size: 15px; font-weight: 600; color: #191f28">{{item.name}}</span>
+<span style="font-size: 13px; color: #4e5968; font-variant-numeric: tabular-nums">{{item.num}}</span>
+</span>
+<span style="flex: none; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{item.selected}}" hint-placeholder-val="{{ false }}">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{item.check}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+</sc-if>
+</span>
+</button>
+</sc-for>
+<button type="button" aria-label="다른 계좌 추가" onClick="{{toast}}" style="width: 100%; height: 60px; box-sizing: border-box; border-radius: 14px; border: 1px dashed #d1d6db; background: #ffffff; padding: 0 14px; display: flex; align-items: center; gap: 12px; font-family: inherit; text-align: left; cursor: pointer">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 50%; background: #f2f4f6; color: #4e5968; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></span>
+<span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 600; color: #4e5968">다른 계좌 추가</span>
+<span style="flex: none; width: 22px; height: 22px"></span>
+</button>
+</div>
+</div>
+</sc-if>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff">
+<button type="button" onClick="{{goDone}}" disabled="{{payDisabled}}" style="width: 100%; height: 56px; border: 0; border-radius: 14px; background: {{payBtnBg}}; color: {{payBtnFg}}; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">결제하기</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; display: flex; flex-direction: column; padding-top: 44px; box-sizing: border-box">
+<div style="padding: 132px 24px 0 24px; display: flex; flex-direction: column; align-items: center; text-align: center">
+<svg width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="완료"><circle cx="32" cy="32" r="32" fill="{{accent}}"></circle><path d="M20 33.5l8 8 16-17" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<h1 style="margin: 24px 0 0 0; font-size: 26px; font-weight: 700; letter-spacing: -0.5px; color: #191f28">즉시결제 완료</h1>
+<p style="margin: 8px 0 0 0; font-size: 17px; color: #4e5968">카드 대금을 결제했어요</p>
+</div>
+
+<div style="margin: 44px 24px 0 24px; background: #f9fafb; border-radius: 16px; padding: 4px 20px; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0">
+<span style="font-size: 15px; color: #4e5968">결제 금액</span>
+<span style="font-size: 17px; font-weight: 700; color: #191f28; font-variant-numeric: tabular-nums">{{amountFull}}</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid #e5e8eb">
+<span style="font-size: 15px; color: #4e5968; flex: none">결제 계좌</span>
+<span style="font-size: 15px; font-weight: 600; color: #333d4b; text-align: right">(주)다른은행 123-456-789</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid #e5e8eb">
+<span style="font-size: 15px; color: #4e5968; flex: none">결제 일시</span>
+<span style="font-size: 15px; font-weight: 600; color: #333d4b; text-align: right; font-variant-numeric: tabular-nums">{{paidAtText}}</span>
+</div>
+</div>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff">
+<button type="button" onClick="{{goHome}}" style="width: 100%; height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">확인</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isPen1}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; display: flex; flex-direction: column; padding-top: 44px; box-sizing: border-box">
+<header style="height: 52px; position: relative; display: flex; align-items: center; padding: 0 6px; flex: none">
+<button type="button" aria-label="뒤로가기" onClick="{{goBack}}" style="width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #191f28; cursor: pointer; position: relative; z-index: 1">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 12H5"></path><path d="M11 5.5L4.5 12l6.5 6.5"></path></svg>
+</button>
+<h1 style="position: absolute; left: 60px; right: 60px; margin: 0; text-align: center; font-size: 17px; font-weight: 600; color: #191f28">연금저축</h1>
+</header>
+
+<div style="padding: 20px 24px 0 24px; display: flex; flex-direction: column">
+<span style="align-self: flex-start; height: 26px; padding: 0 10px; border-radius: 8px; background: {{accentTint}}; color: {{accent}}; font-size: 13px; font-weight: 600; display: flex; align-items: center">연금저축펀드</span>
+<h2 style="margin: 12px 0 0 0; font-size: 26px; font-weight: 700; letter-spacing: -0.5px; color: #191f28">올머니 연금저축펀드</h2>
+<p style="margin: 12px 0 0 0; font-size: 17px; line-height: 26px; color: #4e5968">노후를 위해 매달 꾸준히 모으는 연금 상품이에요. 납입한 금액은 연 600만 원까지 세액공제를 받을 수 있고, 만 55세 이후 연금으로 나눠 받아요.</p>
+</div>
+
+<div style="margin: 28px 24px 0 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<div style="background: #f9fafb; border-radius: 16px; padding: 18px 16px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; color: #4e5968">연 수익률 (3년 평균)</span>
+<span style="font-size: 26px; font-weight: 700; letter-spacing: -0.5px; color: {{accent}}; font-variant-numeric: tabular-nums">5.2%</span>
+</div>
+<div style="background: #f9fafb; border-radius: 16px; padding: 18px 16px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; color: #4e5968">세액공제 한도</span>
+<span style="font-size: 22px; font-weight: 700; letter-spacing: -0.4px; color: #191f28; line-height: 32px">연 600만 원</span>
+</div>
+</div>
+<p style="margin: 12px 24px 0 24px; font-size: 13px; line-height: 19px; color: #4e5968">과거 수익률은 미래 수익을 보장하지 않으며, 운용 결과에 따라 원금 손실이 생길 수 있어요.</p>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff">
+<button type="button" onClick="{{goPen2}}" style="width: 100%; height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">가입하기</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isPen2}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; display: flex; flex-direction: column; padding-top: 44px; box-sizing: border-box">
+<header style="height: 52px; position: relative; display: flex; align-items: center; padding: 0 6px; flex: none">
+<button type="button" aria-label="뒤로가기" onClick="{{goBack}}" style="width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #191f28; cursor: pointer; position: relative; z-index: 1">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 12H5"></path><path d="M11 5.5L4.5 12l6.5 6.5"></path></svg>
+</button>
+<h1 style="position: absolute; left: 60px; right: 60px; margin: 0; text-align: center; font-size: 17px; font-weight: 600; color: #191f28">연금저축</h1>
+</header>
+
+<div style="padding: 20px 24px 0 24px; display: flex; flex-direction: column">
+<h2 style="margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.4px; color: #191f28">가입 조건을 정해주세요</h2>
+
+<div style="margin-top: 24px; display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+<span style="font-size: 15px; font-weight: 600; color: #4e5968">월 납입금액</span>
+<span style="font-size: 17px; font-weight: 700; color: #191f28; font-variant-numeric: tabular-nums">{{monthlyText}}</span>
+</div>
+<div role="group" aria-label="월 납입금액 선택" style="margin-top: 10px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{monthChips}}" as="item" hint-placeholder-count="4">
+<button type="button" onClick="{{item.pick}}" aria-pressed="{{item.pressed}}" style="height: 48px; border-radius: 12px; border: 1.5px solid {{item.border}}; background: {{item.bg}}; color: {{item.color}}; font-family: inherit; font-size: 15px; font-weight: {{item.weight}}; cursor: pointer; padding: 0">{{item.label}}</button>
+</sc-for>
+</div>
+
+<sc-if value="{{showYears}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 24px; display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+<span style="font-size: 15px; font-weight: 600; color: #4e5968">납입 기간</span>
+<span style="font-size: 17px; font-weight: 700; color: #191f28">{{yearsText}}</span>
+</div>
+<div role="group" aria-label="납입 기간 선택" style="margin-top: 10px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{yearChips}}" as="item" hint-placeholder-count="4">
+<button type="button" onClick="{{item.pick}}" aria-pressed="{{item.pressed}}" style="height: 48px; border-radius: 12px; border: 1.5px solid {{item.border}}; background: {{item.bg}}; color: {{item.color}}; font-family: inherit; font-size: 15px; font-weight: {{item.weight}}; cursor: pointer; padding: 0">{{item.label}}</button>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{showPenAcct}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 24px; display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+<span style="font-size: 15px; font-weight: 600; color: #4e5968">이체 계좌</span>
+<span style="font-size: 13px; color: #4e5968">매달 이 계좌에서 자동이체돼요</span>
+</div>
+<div role="group" aria-label="이체 계좌 선택" style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{acctList}}" as="item" hint-placeholder-count="3">
+<button type="button" onClick="{{item.pick}}" aria-pressed="{{item.pressed}}" style="width: 100%; height: 60px; box-sizing: border-box; border-radius: 14px; border: {{item.border}}; background: {{item.bg}}; padding: 0 14px; display: flex; align-items: center; gap: 12px; font-family: inherit; text-align: left; cursor: pointer">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 50%; background: {{item.iconBg}}; color: {{item.iconFg}}; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{item.letter}}</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<span style="font-size: 15px; font-weight: 600; color: #191f28">{{item.name}}</span>
+<span style="font-size: 13px; color: #4e5968; font-variant-numeric: tabular-nums">{{item.num}}</span>
+</span>
+<span style="flex: none; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{item.selected}}" hint-placeholder-val="{{ false }}">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{item.check}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+</sc-if>
+</span>
+</button>
+</sc-for>
+<button type="button" aria-label="다른 계좌 추가" onClick="{{toast}}" style="width: 100%; height: 60px; box-sizing: border-box; border-radius: 14px; border: 1px dashed #d1d6db; background: #ffffff; padding: 0 14px; display: flex; align-items: center; gap: 12px; font-family: inherit; text-align: left; cursor: pointer">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 50%; background: #f2f4f6; color: #4e5968; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></span>
+<span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 600; color: #4e5968">다른 계좌 추가</span>
+<span style="flex: none; width: 22px; height: 22px"></span>
+</button>
+</div>
+</sc-if>
+
+</div>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff">
+<button type="button" onClick="{{goPen3}}" disabled="{{penDisabled}}" style="width: 100%; height: 56px; border: 0; border-radius: 14px; background: {{penBtnBg}}; color: {{penBtnFg}}; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">가입 신청</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isPen3}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; display: flex; flex-direction: column; padding-top: 44px; box-sizing: border-box">
+<div style="padding: 112px 24px 0 24px; display: flex; flex-direction: column; align-items: center; text-align: center">
+<svg width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="완료"><circle cx="32" cy="32" r="32" fill="{{accent}}"></circle><path d="M20 33.5l8 8 16-17" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<h1 style="margin: 24px 0 0 0; font-size: 26px; font-weight: 700; letter-spacing: -0.5px; color: #191f28">연금저축 가입 완료</h1>
+<p style="margin: 8px 0 0 0; font-size: 17px; color: #4e5968">매달 정해진 날에 자동으로 이체돼요</p>
+</div>
+
+<div style="margin: 40px 24px 0 24px; background: #f9fafb; border-radius: 16px; padding: 4px 20px; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0">
+<span style="font-size: 15px; color: #4e5968; flex: none">상품명</span>
+<span style="font-size: 15px; font-weight: 600; color: #333d4b; text-align: right">올머니 연금저축펀드</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid #e5e8eb">
+<span style="font-size: 15px; color: #4e5968; flex: none">월 납입금</span>
+<span style="font-size: 17px; font-weight: 700; color: #191f28; font-variant-numeric: tabular-nums">{{monthlyText}}</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid #e5e8eb">
+<span style="font-size: 15px; color: #4e5968; flex: none">납입 기간</span>
+<span style="font-size: 15px; font-weight: 600; color: #333d4b">{{yearsText}}</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid #e5e8eb">
+<span style="font-size: 15px; color: #4e5968; flex: none">이체 계좌</span>
+<span style="font-size: 15px; font-weight: 600; color: #333d4b; text-align: right; font-variant-numeric: tabular-nums">{{penAcctText}}</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid #e5e8eb">
+<span style="font-size: 15px; color: #4e5968; flex: none">첫 이체일</span>
+<span style="font-size: 15px; font-weight: 600; color: #333d4b; text-align: right; font-variant-numeric: tabular-nums">{{firstTransfer}}</span>
+</div>
+</div>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff">
+<button type="button" onClick="{{goHome}}" style="width: 100%; height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">확인</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isRem1}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; display: flex; flex-direction: column; padding-top: 44px; box-sizing: border-box">
+<header style="height: 52px; position: relative; display: flex; align-items: center; padding: 0 6px; flex: none">
+<button type="button" aria-label="뒤로가기" onClick="{{goBack}}" style="width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #191f28; cursor: pointer; position: relative; z-index: 1">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 12H5"></path><path d="M11 5.5L4.5 12l6.5 6.5"></path></svg>
+</button>
+<h1 style="position: absolute; left: 60px; right: 60px; margin: 0; text-align: center; font-size: 17px; font-weight: 600; color: #191f28">해외송금</h1>
+</header>
+
+<div style="padding: 20px 24px 0 24px; display: flex; flex-direction: column">
+<h2 style="margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.4px; color: #191f28">해외 계좌로 바로 보내요</h2>
+<p style="margin: 8px 0 0 0; font-size: 15px; line-height: 22px; color: #4e5968">받는 분 계좌에 보통 2~3 영업일 안에 도착해요.</p>
+
+<span style="margin-top: 28px; font-size: 15px; font-weight: 600; color: #4e5968">송금 가능 국가</span>
+<div style="margin-top: 10px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{mainCountries}}" as="item" hint-placeholder-count="6">
+<button type="button" onClick="{{item.pick}}" aria-label="{{item.name}}로 송금하기" style="height: 48px; border-radius: 12px; border: 1px solid #e5e8eb; background: #ffffff; font-family: inherit; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 15px; font-weight: 600; color: #333d4b">{{item.name}} <span style="font-size: 13px; font-weight: 500; color: #4e5968">{{item.cur}}</span></button>
+</sc-for>
+</div>
+<p style="margin: 10px 0 0 0; font-size: 13px; line-height: 19px; color: #4e5968">국가를 누르면 바로 송금 정보를 입력해요. 다른 국가는 다음 화면에서 고를 수 있어요.</p>
+
+<span style="margin-top: 28px; font-size: 15px; font-weight: 600; color: #4e5968">최근 송금</span>
+<div style="margin-top: 10px; display: flex; align-items: center; gap: 12px; padding: 16px; border: 1px solid #e5e8eb; border-radius: 14px">
+<span style="flex: none; width: 40px; height: 40px; border-radius: 50%; background: #eaf0fc; color: #2f5bd0; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">US</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 17px; font-weight: 600; color: #191f28">Hong Gildong</span>
+<span style="font-size: 13px; color: #4e5968">미국 · {{recentRemit}}</span>
+</span>
+<span style="flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 4px">
+<span style="font-size: 15px; font-weight: 700; color: #191f28; font-variant-numeric: tabular-nums">500,000원</span>
+<span style="height: 22px; padding: 0 8px; border-radius: 6px; background: #e3f6ec; color: #0a6b40; font-size: 12px; font-weight: 600; display: flex; align-items: center">도착 완료</span>
+</span>
+</div>
+</div>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff">
+<button type="button" onClick="{{goRem2}}" style="width: 100%; height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">송금하기</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isRem2}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; display: flex; flex-direction: column; padding-top: 44px; box-sizing: border-box">
+<header style="height: 52px; position: relative; display: flex; align-items: center; padding: 0 6px; flex: none">
+<button type="button" aria-label="뒤로가기" onClick="{{goBack}}" style="width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #191f28; cursor: pointer; position: relative; z-index: 1">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 12H5"></path><path d="M11 5.5L4.5 12l6.5 6.5"></path></svg>
+</button>
+<h1 style="position: absolute; left: 60px; right: 60px; margin: 0; text-align: center; font-size: 17px; font-weight: 600; color: #191f28">해외송금</h1>
+</header>
+
+<div style="padding: 16px 24px 0 24px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="olm-rem-name" style="font-size: 15px; font-weight: 600; color: #4e5968">받는 사람 이름</label>
+<input id="olm-rem-name" type="text" autoComplete="off" value="{{recipient}}" onChange="{{onRecipient}}" placeholder="영문 이름 (예: Hong Gildong)" style="height: 54px; box-sizing: border-box; border: 1px solid #d1d6db; border-radius: 12px; padding: 0 16px; font-family: inherit; font-size: 17px; color: #191f28; background: #ffffff">
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="olm-rem-iban" style="font-size: 15px; font-weight: 600; color: #4e5968">받는 계좌 / IBAN</label>
+<input id="olm-rem-iban" type="text" autoComplete="off" value="{{iban}}" onChange="{{onIban}}" placeholder="계좌번호 또는 IBAN" style="height: 54px; box-sizing: border-box; border: 1px solid #d1d6db; border-radius: 12px; padding: 0 16px; font-family: inherit; font-size: 17px; color: #191f28; background: #ffffff; font-variant-numeric: tabular-nums">
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 15px; font-weight: 600; color: #4e5968">송금 국가</span>
+<button type="button" onClick="{{goRemC}}" aria-label="{{countryAria}}" style="height: 54px; box-sizing: border-box; border: {{countryBorder}}; border-radius: 12px; padding: 0 14px 0 16px; background: {{countryBg}}; font-family: inherit; display: flex; align-items: center; justify-content: space-between; cursor: pointer">
+<span style="display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: {{countryWeight}}; color: {{countryColor}}">{{countryLabel}} <span style="font-size: 15px; font-weight: 500; color: #4e5968">{{countryCurLabel}}</span></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4e5968" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="olm-rem-amount" style="font-size: 15px; font-weight: 600; color: #4e5968">송금 금액</label>
+<div style="height: 54px; box-sizing: border-box; border: 1px solid #d1d6db; border-radius: 12px; padding: 0 16px; display: flex; align-items: center; gap: 4px; background: #ffffff">
+<input id="olm-rem-amount" type="text" inputMode="numeric" autoComplete="off" value="{{remAmountText}}" onChange="{{onRemAmount}}" placeholder="보낼 금액" style="flex: 1; min-width: 0; height: 100%; border: 0; outline: none; background: transparent; padding: 0; font-family: inherit; font-size: 17px; color: #191f28; font-variant-numeric: tabular-nums">
+<span style="flex: none; font-size: 17px; font-weight: 600; color: #333d4b">원</span>
+</div>
+</div>
+
+<sc-if value="{{remAcctVisible}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column">
+<span style="font-size: 15px; font-weight: 600; color: #4e5968">출금 계좌</span>
+<div role="group" aria-label="출금 계좌 선택" style="margin-top: 8px; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{remAcctList}}" as="item" hint-placeholder-count="1">
+<button type="button" onClick="{{item.pick}}" aria-pressed="{{item.pressed}}" style="width: 100%; height: 60px; box-sizing: border-box; border-radius: 14px; border: {{item.border}}; background: {{item.bg}}; padding: 0 14px; display: flex; align-items: center; gap: 12px; font-family: inherit; text-align: left; cursor: pointer">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 50%; background: {{item.iconBg}}; color: {{item.iconFg}}; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{item.letter}}</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<span style="font-size: 15px; font-weight: 600; color: #191f28">{{item.name}}</span>
+<span style="font-size: 13px; color: #4e5968; font-variant-numeric: tabular-nums">{{item.num}}</span>
+</span>
+<span style="flex: none; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{item.selected}}" hint-placeholder-val="{{ false }}">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{item.check}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+</sc-if>
+</span>
+</button>
+</sc-for>
+<button type="button" aria-label="다른 계좌 추가" onClick="{{toast}}" style="width: 100%; height: 60px; box-sizing: border-box; border-radius: 14px; border: 1px dashed #d1d6db; background: #ffffff; padding: 0 14px; display: flex; align-items: center; gap: 12px; font-family: inherit; text-align: left; cursor: pointer">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 50%; background: #f2f4f6; color: #4e5968; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></span>
+<span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 600; color: #4e5968">다른 계좌 추가</span>
+<span style="flex: none; width: 22px; height: 22px"></span>
+</button>
+</div>
+</div>
+</sc-if>
+<div style="background: #f9fafb; border-radius: 16px; padding: 4px 18px; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0">
+<span style="font-size: 15px; color: #4e5968">예상 수수료</span>
+<span style="font-size: 15px; font-weight: 600; color: #333d4b; font-variant-numeric: tabular-nums">5,000원</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-top: 1px solid #e5e8eb">
+<span style="font-size: 15px; color: #4e5968">예상 도착일</span>
+<span style="font-size: 15px; font-weight: 600; color: #333d4b">2~3 영업일</span>
+</div>
+</div>
+</div>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff">
+<button type="button" onClick="{{goRem3}}" disabled="{{remDisabled}}" style="width: 100%; height: 56px; border: 0; border-radius: 14px; background: {{remBtnBg}}; color: {{remBtnFg}}; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">송금하기</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isRem3}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; display: flex; flex-direction: column; padding-top: 44px; box-sizing: border-box">
+<div style="padding: 112px 24px 0 24px; display: flex; flex-direction: column; align-items: center; text-align: center">
+<svg width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="완료"><circle cx="32" cy="32" r="32" fill="{{accent}}"></circle><path d="M20 33.5l8 8 16-17" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<h1 style="margin: 24px 0 0 0; font-size: 26px; font-weight: 700; letter-spacing: -0.5px; color: #191f28">해외송금 완료</h1>
+<p style="margin: 8px 0 0 0; font-size: 17px; color: #4e5968">도착하면 알림으로 알려드릴게요</p>
+</div>
+
+<div style="margin: 40px 24px 0 24px; background: #f9fafb; border-radius: 16px; padding: 4px 20px; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0">
+<span style="font-size: 15px; color: #4e5968; flex: none">보낸 금액</span>
+<span style="font-size: 17px; font-weight: 700; color: #191f28; font-variant-numeric: tabular-nums">{{remAmountFull}}</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid #e5e8eb">
+<span style="font-size: 15px; color: #4e5968; flex: none">수수료</span>
+<span style="font-size: 15px; font-weight: 600; color: #333d4b; font-variant-numeric: tabular-nums">5,000원</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid #e5e8eb">
+<span style="font-size: 15px; color: #4e5968; flex: none">받는 사람</span>
+<span style="font-size: 15px; font-weight: 600; color: #333d4b; text-align: right">{{recipientName}}</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid #e5e8eb">
+<span style="font-size: 15px; color: #4e5968; flex: none">받는 국가</span>
+<span style="font-size: 15px; font-weight: 600; color: #333d4b; text-align: right">{{countryName}} ({{countryCur}})</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid #e5e8eb">
+<span style="font-size: 15px; color: #4e5968; flex: none">출금 계좌</span>
+<span style="font-size: 15px; font-weight: 600; color: #333d4b; text-align: right; font-variant-numeric: tabular-nums">(주)다른은행 123-456-789</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid #e5e8eb">
+<span style="font-size: 15px; color: #4e5968; flex: none">예상 도착일</span>
+<span style="font-size: 15px; font-weight: 600; color: #333d4b; text-align: right">{{arrivalRange}}</span>
+</div>
+</div>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff">
+<button type="button" onClick="{{goHome}}" style="width: 100%; height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">확인</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isRemC}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; display: flex; flex-direction: column; padding-top: 44px; box-sizing: border-box">
+<header style="height: 52px; position: relative; display: flex; align-items: center; padding: 0 6px; flex: none">
+<button type="button" aria-label="뒤로가기" onClick="{{goBack}}" style="width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #191f28; cursor: pointer; position: relative; z-index: 1">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 12H5"></path><path d="M11 5.5L4.5 12l6.5 6.5"></path></svg>
+</button>
+<h1 style="position: absolute; left: 60px; right: 60px; margin: 0; text-align: center; font-size: 17px; font-weight: 600; color: #191f28">송금 국가 선택</h1>
+</header>
+<h2 style="flex: none; margin: 0; padding: 16px 24px 12px 24px; font-size: 22px; font-weight: 700; letter-spacing: -0.4px; color: #191f28">어느 나라로 보낼까요?</h2>
+<div style="flex: 1; min-height: 0; overflow-y: auto; padding: 0 12px 34px 12px; display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{countryList}}" as="item" hint-placeholder-count="10">
+<button type="button" onClick="{{item.pick}}" aria-pressed="{{item.pressed}}" style="flex: none; width: 100%; height: 60px; border: 0; background: {{item.bg}}; border-radius: 12px; padding: 0 12px; display: flex; align-items: center; gap: 12px; font-family: inherit; text-align: left; cursor: pointer">
+<span style="flex: none; width: 40px; height: 40px; border-radius: 50%; background: #f2f4f6; color: #4e5968; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{item.code}}</span>
+<span style="flex: 1; min-width: 0; font-size: 17px; font-weight: 600; color: #191f28">{{item.name}}</span>
+<span style="flex: none; font-size: 15px; color: #4e5968">{{item.cur}}</span>
+<span style="flex: none; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{item.selected}}" hint-placeholder-val="{{ false }}">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{item.check}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+</sc-if>
+</span>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isReqA}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; padding-top: 44px; box-sizing: border-box; display: flex; flex-direction: column">
+<header style="height: 52px; display: flex; align-items: center; padding: 0 6px; flex: none">
+<button type="button" aria-label="뒤로가기" onClick="{{reqBack}}" style="width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #191f28; cursor: pointer">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 12H5"></path><path d="M11 5.5L4.5 12l6.5 6.5"></path></svg>
+</button>
+</header>
+<div style="padding: 16px 24px 0 24px; display: flex; flex-direction: column">
+<span style="width: 56px; height: 56px; border-radius: 16px; background: {{accentTint}}; color: {{accent}}; display: flex; align-items: center; justify-content: center">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"></path><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"></path></svg>
+</span>
+<h1 style="margin: 20px 0 0 0; font-size: 22px; line-height: 30px; font-weight: 700; letter-spacing: -0.4px; color: #191f28">계좌 잔액 조회를 위한 동의</h1>
+<p style="margin: 10px 0 0 0; height: 52px; font-size: 17px; line-height: 26px; color: #4e5968">다른 은행 계좌의 잔액을 확인하려면 오픈뱅킹 연결이 필요합니다.</p>
+</div>
+<ul style="list-style: none; margin: 28px 24px 0 24px; padding: 0; border: 1px solid #e5e8eb; border-radius: 16px">
+<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px">
+<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">오픈뱅킹 서비스 이용 동의</span>
+<button type="button" onClick="{{openTerms.A1}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
+</li>
+<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #f2f4f6">
+<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">계좌 정보 조회 동의</span>
+<button type="button" onClick="{{openTerms.A2}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
+</li>
+<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #f2f4f6">
+<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">개인정보 제3자 제공 동의</span>
+<button type="button" onClick="{{openTerms.A3}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
+</li>
+</ul>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff; display: flex; flex-direction: column; gap: 8px">
+<button type="button" onClick="{{reqAgree}}" style="height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">동의하고 연결하기</button>
+<button type="button" onClick="{{reqBack}}" style="height: 56px; border: 0; border-radius: 14px; background: #f2f4f6; color: #4e5968; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">취소</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isReqB}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; padding-top: 44px; box-sizing: border-box; display: flex; flex-direction: column">
+<header style="height: 52px; display: flex; align-items: center; padding: 0 6px; flex: none">
+<button type="button" aria-label="뒤로가기" onClick="{{reqBack}}" style="width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #191f28; cursor: pointer">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 12H5"></path><path d="M11 5.5L4.5 12l6.5 6.5"></path></svg>
+</button>
+</header>
+<div style="padding: 16px 24px 0 24px; display: flex; flex-direction: column">
+<span style="width: 56px; height: 56px; border-radius: 16px; background: {{accentTint}}; color: {{accent}}; display: flex; align-items: center; justify-content: center">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2.5"></rect><path d="M8.5 7.5h7"></path><path d="M8.5 12h.01"></path><path d="M12 12h.01"></path><path d="M15.5 12h.01"></path><path d="M8.5 16h.01"></path><path d="M12 16h.01"></path><path d="M15.5 16h.01"></path></svg>
+</span>
+<h1 style="margin: 20px 0 0 0; font-size: 22px; line-height: 30px; font-weight: 700; letter-spacing: -0.4px; color: #191f28">예상 수령액 계산을 위한 동의</h1>
+<p style="margin: 10px 0 0 0; height: 52px; font-size: 17px; line-height: 26px; color: #4e5968">정확한 예상액 계산을 위해 다른 금융사의 연금 가입 이력이 필요합니다.</p>
+</div>
+<ul style="list-style: none; margin: 28px 24px 0 24px; padding: 0; border: 1px solid #e5e8eb; border-radius: 16px">
+<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px">
+<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">타 금융사 연금 정보 연결 동의</span>
+<button type="button" onClick="{{openTerms.B1}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
+</li>
+<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #f2f4f6">
+<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">가입·납입 이력 수집 동의</span>
+<button type="button" onClick="{{openTerms.B2}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
+</li>
+<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #f2f4f6">
+<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">개인정보 제3자 제공 동의</span>
+<button type="button" onClick="{{openTerms.B3}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
+</li>
+</ul>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff; display: flex; flex-direction: column; gap: 8px">
+<button type="button" onClick="{{reqAgree}}" style="height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">동의하고 조회하기</button>
+<button type="button" onClick="{{reqBack}}" style="height: 56px; border: 0; border-radius: 14px; background: #f2f4f6; color: #4e5968; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">취소</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isReqC}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; padding-top: 44px; box-sizing: border-box; display: flex; flex-direction: column">
+<header style="height: 52px; display: flex; align-items: center; padding: 0 6px; flex: none">
+<button type="button" aria-label="뒤로가기" onClick="{{reqBack}}" style="width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #191f28; cursor: pointer">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 12H5"></path><path d="M11 5.5L4.5 12l6.5 6.5"></path></svg>
+</button>
+</header>
+<div style="padding: 16px 24px 0 24px; display: flex; flex-direction: column">
+<span style="width: 56px; height: 56px; border-radius: 16px; background: {{accentTint}}; color: {{accent}}; display: flex; align-items: center; justify-content: center">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h13"></path><path d="M15 4.5L18.5 8 15 11.5"></path><path d="M19 16H6"></path><path d="M9 12.5L5.5 16 9 19.5"></path></svg>
+</span>
+<h1 style="margin: 20px 0 0 0; font-size: 22px; line-height: 30px; font-weight: 700; letter-spacing: -0.4px; color: #191f28">쿠폰 지급을 위한 계좌 변경</h1>
+<p style="margin: 10px 0 0 0; height: 52px; font-size: 17px; line-height: 26px; color: #4e5968">쿠폰을 받으려면 해외송금 출금 계좌를 올머니 입출금 계좌로 변경해야 합니다.</p>
+</div>
+<ul style="list-style: none; margin: 28px 24px 0 24px; padding: 0; border: 1px solid #e5e8eb; border-radius: 16px">
+<li style="min-height: 60px; padding: 10px 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 2px">
+<span style="font-size: 13px; color: #4e5968">현재 출금 계좌</span>
+<span style="font-size: 15px; font-weight: 500; color: #333d4b">(주)다른은행 123-456-789</span>
+</li>
+<li style="min-height: 60px; padding: 10px 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 2px; border-top: 1px solid #f2f4f6">
+<span style="font-size: 13px; color: #4e5968">변경될 출금 계좌</span>
+<span style="font-size: 15px; font-weight: 600; color: #191f28">올머니 입출금 110-234-567</span>
+</li>
+<li style="min-height: 60px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #f2f4f6">
+<svg style="flex: none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg>
+<span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #333d4b">쿠폰 이용 약관 동의</span>
+<button type="button" onClick="{{openTerms.C1}}" aria-label="약관 보기" style="flex: none; height: 44px; padding: 0 6px; margin-right: -6px; border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #4e5968; cursor: pointer">보기</button>
+</li>
+</ul>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff; display: flex; flex-direction: column; gap: 8px">
+<button type="button" onClick="{{reqAgree}}" style="height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">계좌 변경하기</button>
+<button type="button" onClick="{{reqBack}}" style="height: 56px; border: 0; border-radius: 14px; background: #f2f4f6; color: #4e5968; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">취소</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isRes}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; display: flex; flex-direction: column; padding-top: 44px; box-sizing: border-box">
+<div style="padding: 132px 24px 0 24px; display: flex; flex-direction: column; align-items: center; text-align: center">
+<svg width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="완료"><circle cx="32" cy="32" r="32" fill="{{accent}}"></circle><path d="M20 33.5l8 8 16-17" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<h1 style="margin: 24px 0 0 0; height: 34px; font-size: 26px; line-height: 34px; font-weight: 700; letter-spacing: -0.5px; color: #191f28">{{resTitle}}</h1>
+<p style="margin: 8px 0 0 0; height: 52px; overflow: hidden; font-size: 17px; line-height: 26px; color: #4e5968">{{resDesc}}</p>
+</div>
+<div style="margin: 40px 24px 0 24px; background: #f9fafb; border-radius: 16px; padding: 4px 20px; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0">
+<span style="font-size: 15px; color: #4e5968">{{resLabel}}</span>
+<span style="flex: none; font-size: 17px; font-weight: 700; color: #191f28; font-variant-numeric: tabular-nums">{{resValue}}</span>
+</div>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px 16px; background: #ffffff">
+<button type="button" onClick="{{resDone}}" style="width: 100%; height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">확인</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{termsVisible}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4)"></div>
+<div role="dialog" aria-modal="true" aria-labelledby="olm-terms-title" style="position: absolute; left: 0; right: 0; bottom: 0; box-sizing: border-box; background: #ffffff; border-radius: 24px 24px 0 0; padding: 12px 24px 34px 24px; display: flex; flex-direction: column; box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12)">
+<span aria-hidden="true" style="align-self: center; width: 36px; height: 4px; border-radius: 2px; background: #d1d6db"></span>
+<h2 id="olm-terms-title" style="margin: 20px 0 0 0; font-size: 20px; line-height: 28px; font-weight: 700; letter-spacing: -0.4px; color: #191f28">{{termsTitle}}</h2>
+<p style="margin: 12px 0 0 0; font-size: 15px; line-height: 24px; color: #333d4b; white-space: pre-line">{{termsBody}}</p>
+<button type="button" onClick="{{closeTerms}}" style="margin-top: 24px; height: 56px; border: 0; border-radius: 14px; background: #f2f4f6; color: #4e5968; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">닫기</button>
+</div>
+</sc-if>
+
+<sc-if value="{{toastVisible}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position: absolute; left: 16px; right: 16px; bottom: 112px; box-sizing: border-box; padding: 14px 16px; border-radius: 14px; background: #333d4b; color: #ffffff; font-size: 15px; font-weight: 500; text-align: center; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18)">이번 과업에서는 사용하지 않는 기능이에요</div>
+</sc-if>
+
+<sc-if value="{{popVisible}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4)"></div>
+<div role="dialog" aria-modal="true" aria-labelledby="olm-pop-title" style="position: absolute; left: 12px; right: 12px; bottom: 28px; height: 222px; box-sizing: border-box; background: #ffffff; border-radius: 24px; padding: 12px 22px 16px 22px; display: flex; flex-direction: column; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16)">
+<button type="button" aria-label="닫기" onClick="{{closePop}}" style="flex: none; align-self: flex-end; width: 44px; height: 44px; margin-right: -12px; border: 0; background: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #4e5968; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg></button>
+<h2 id="olm-pop-title" style="margin: 8px 0 0 0; font-size: 20px; line-height: 28px; font-weight: 700; letter-spacing: -0.5px; color: #191f28; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{popTitle}}</h2>
+<p style="margin: 8px 0 0 0; height: 26px; font-size: 17px; line-height: 26px; color: #4e5968; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{popDesc}}</p>
+<div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px">
+<button type="button" onClick="{{popGo}}" style="height: 56px; border: 0; border-radius: 14px; background: {{accent}}; color: #ffffff; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer">{{popCta}}</button>
+</div>
+</div>
+</sc-if>
+
+</div>
+</template>
+<script>
+
+var SVGNS = 'http://www.w3.org/2000/svg';
+var WHOLE = /^\s*\{\{\s*([^}]+?)\s*\}\}\s*$/;
+function lookup(path, scope) {
+  path = String(path).trim();
+  if (path === 'true') return true;
+  if (path === 'false') return false;
+  if (/^-?\d+(\.\d+)?$/.test(path)) return Number(path);
+  var parts = path.split('.');
+  var v = scope[parts[0]];
+  for (var i = 1; i < parts.length; i++) { if (v == null) return undefined; v = v[parts[i]]; }
+  return v;
+}
+function interp(str, scope) {
+  return str.replace(/\{\{\s*([^}]+?)\s*\}\}/g, function (m, p) { var v = lookup(p, scope); return v == null ? '' : String(v); });
+}
+function procChildren(node, scope) {
+  var out = [];
+  var kids = node.childNodes;
+  for (var i = 0; i < kids.length; i++) out = out.concat(proc(kids[i], scope));
+  return out;
+}
+function proc(node, scope) {
+  if (node.nodeType === 3) {
+    var t = node.textContent;
+    return [document.createTextNode(t.indexOf('{{') >= 0 ? interp(t, scope) : t)];
+  }
+  if (node.nodeType !== 1) return [];
+  var tag = node.localName.toLowerCase();
+  if (tag === 'sc-if') {
+    var mi = WHOLE.exec(node.getAttribute('value') || '');
+    return (mi && lookup(mi[1], scope)) ? procChildren(node, scope) : [];
+  }
+  if (tag === 'sc-for') {
+    var mf = WHOLE.exec(node.getAttribute('list') || '');
+    var list = (mf ? lookup(mf[1], scope) : []) || [];
+    var as = node.getAttribute('as') || 'item';
+    var res = [];
+    list.forEach(function (it, idx) { var s = Object.create(scope); s[as] = it; s.$index = idx; res = res.concat(procChildren(node, s)); });
+    return res;
+  }
+  var el = node.namespaceURI === SVGNS ? document.createElementNS(SVGNS, node.localName) : document.createElement(node.localName);
+  for (var a = 0; a < node.attributes.length; a++) {
+    var name = node.attributes[a].name, val = node.attributes[a].value;
+    if (name.indexOf('hint-') === 0) continue;
+    var m = WHOLE.exec(val);
+    if (name.indexOf('on') === 0 && m) {
+      var fn = lookup(m[1], scope);
+      if (typeof fn === 'function') {
+        var evName = name === 'onchange' ? 'input' : name.slice(2);
+        if (evName === 'blur') { (function (f) { el.addEventListener('blur', function (e) { if (!RENDERING) f(e); }); })(fn); }
+        else el.addEventListener(evName, fn);
+      }
+      continue;
+    }
+    if (name === 'disabled' && m) { if (lookup(m[1], scope)) el.setAttribute('disabled', ''); continue; }
+    if (name === 'value' && m) { var vv = lookup(m[1], scope); vv = vv == null ? '' : String(vv); el.setAttribute('value', vv); el.value = vv; continue; }
+    el.setAttribute(name, val.indexOf('{{') >= 0 ? interp(val, scope) : val);
+  }
+  procChildren(node, scope).forEach(function (c) { el.appendChild(c); });
+  return [el];
+}
+var comp = null, app = null, tpl = null, RENDERING = false;
+function render() {
+  var act = document.activeElement, focusId = act && act.id ? act.id : null, selEnd = null, oldLen = null;
+  if (focusId && typeof act.selectionEnd === 'number') { selEnd = act.selectionEnd; oldLen = act.value.length; }
+  var frag = document.createDocumentFragment();
+  procChildren(tpl.content, comp.renderVals()).forEach(function (n) { frag.appendChild(n); });
+  RENDERING = true;
+  try { app.replaceChildren(frag); } finally { RENDERING = false; }
+  if (focusId) {
+    var nf = document.getElementById(focusId);
+    if (nf) {
+      nf.focus();
+      if (selEnd !== null && typeof nf.setSelectionRange === 'function') {
+        var pos = nf.value.length === oldLen ? selEnd : Math.max(0, selEnd + (nf.value.length - oldLen));
+        try { nf.setSelectionRange(pos, pos); } catch (e) {}
+      }
+    }
+  }
+}
+class DCLogic {
+  constructor(props) { this.props = props || {}; this.state = {}; }
+  setState(patch) {
+    var prev = Object.assign({}, this.state);
+    Object.assign(this.state, typeof patch === 'function' ? patch(this.state, this.props) : patch);
+    render();
+    if (this.componentDidUpdate) this.componentDidUpdate(this.props, prev);
+  }
+  forceUpdate() { render(); }
+}
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var task = 1;
+    try {
+      var m = /[?&]task=([123])(?:&|$)/.exec((window.location && window.location.search) || '');
+      if (m) { task = parseInt(m[1], 10); }
+    } catch (e) {}
+    this.state = { hidden: null, screen: (props && props.startScreen) || 'home', task: task, amount: '', payAcct: null, monthly: null, years: null, penAcct: null, recipient: '', iban: '', country: null, remAmount: '', remAcct: null, popOpen: null, shown: {}, reqReturn: 'home', terms: null, toast: false, paidAt: null };
+  }
+  componentDidUpdate(prev) {
+    if (prev.startScreen !== this.props.startScreen && this.props.startScreen) {
+      this.setState({ screen: this.props.startScreen });
+    }
+  }
+  componentWillUnmount() {
+    clearTimeout(this._toast);
+  }
+  tint(hex) {
+    var h = String(hex || '#0F7A6C').replace('#', '');
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    if (isNaN(n)) { return '#e7f2f0'; }
+    var r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    var mix = function (c) { return Math.round(c * 0.1 + 255 * 0.9); };
+    return 'rgb(' + mix(r) + ',' + mix(g) + ',' + mix(b) + ')';
+  }
+  fmt(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  pad2(n) {
+    return n < 10 ? '0' + n : String(n);
+  }
+  md(d) {
+    return (d.getMonth() + 1) + '월 ' + d.getDate() + '일';
+  }
+  ymd(d) {
+    return d.getFullYear() + '년 ' + this.md(d);
+  }
+  addDays(d, n) {
+    var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    x.setDate(x.getDate() + n);
+    return x;
+  }
+  addBizDays(d, n) {
+    var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var c = 0;
+    while (c < n) {
+      x.setDate(x.getDate() + 1);
+      var w = x.getDay();
+      if (w !== 0 && w !== 6) { c++; }
+    }
+    return x;
+  }
+  nextMonthSameDay(d) {
+    var y = d.getFullYear(), m = d.getMonth() + 1;
+    if (m > 11) { m = 0; y++; }
+    var last = new Date(y, m + 1, 0).getDate();
+    return new Date(y, m, Math.min(d.getDate(), last));
+  }
+  payAmountValid(st) {
+    var n = st.amount ? parseInt(st.amount, 10) : 0;
+    return n > 0 && n <= 320000;
+  }
+  remFieldsValid(st) {
+    return !!(String(st.recipient || '').trim() && String(st.iban || '').trim() && st.country && st.remAmount);
+  }
+  isComplete(scr, st) {
+    if (scr === 'pay2') { return this.payAmountValid(st) && !!st.payAcct; }
+    if (scr === 'pen2') { return !!(st.monthly && st.years && st.penAcct); }
+    if (scr === 'rem2') { return this.remFieldsValid(st) && !!st.remAcct; }
+    return false;
+  }
+  inputTrigInfo() {
+    var m = { '1': ['pen2', 'B'], '2': ['pay2', 'A'], '3': ['rem2', 'C'] }[String(this.props.group ?? '0')];
+    return m ? { screen: m[0], pop: m[1] } : null;
+  }
+  applyInput(patch) {
+    var merged = Object.assign({}, this.state, patch);
+    var st = Object.assign({}, patch);
+    if (!this.payAmountValid(merged) && merged.payAcct) { st.payAcct = null; }
+    if (!this.remFieldsValid(merged) && merged.remAcct) { st.remAcct = null; }
+    this.setState(st);
+  }
+  pickAcct(field, id) {
+    var s = this.state;
+    var st = {};
+    st[field] = id;
+    var t = this.inputTrigInfo();
+    if (t && s.screen === t.screen && !s.popOpen && !(s.shown || {})[t.pop]) {
+      var merged = Object.assign({}, s, st);
+      if (this.isComplete(t.screen, merged)) {
+        var sh = Object.assign({}, s.shown);
+        sh[t.pop] = true;
+        st.popOpen = t.pop;
+        st.shown = sh;
+      }
+    }
+    this.setState(st);
+  }
+  renderVals() {
+    var self = this;
+    var accent = this.props.accent ?? '#0F7A6C';
+    var hidden = this.state.hidden === null ? !!(this.props.hideBalance ?? false) : this.state.hidden;
+    var screen = this.state.screen;
+    var task = this.state.task || 1;
+    var now = new Date();
+    var tintC = this.tint(accent);
+    var digits = this.state.amount || '';
+    var num = digits ? parseInt(digits, 10) : 0;
+    var LIMIT = 320000;
+    var over = num > LIMIT;
+    var payAmountOk = this.payAmountValid(this.state);
+    var payDisabled = !payAmountOk || !this.state.payAcct;
+    var acctItems = function (list, selId, field) {
+      return list.map(function (a) {
+        var sel = a.id === selId;
+        return {
+          name: a.name, num: a.num, letter: a.letter,
+          selected: sel, pressed: sel ? 'true' : 'false',
+          border: sel ? '1.5px solid ' + accent : '1px solid #e5e8eb',
+          bg: sel ? tintC : '#ffffff',
+          iconBg: sel ? '#ffffff' : '#f2f4f6',
+          iconFg: sel ? accent : '#4e5968',
+          check: accent,
+          pick: function () { self.pickAcct(field, a.id); }
+        };
+      });
+    };
+    var OTHER_ACCT = [{ id: 'other', name: '(주)다른은행', num: '123-456-789', letter: '다' }];
+    var PEN_ACCTS = [
+      { id: 'main', name: '올머니 입출금', num: '110-234-567', letter: '올' },
+      { id: 'life', name: '올머니 생활비통장', num: '110-345-678', letter: '올' },
+      { id: 'safe', name: '올머니 비상금통장', num: '110-456-789', letter: '올' }
+    ];
+    var monthly = this.state.monthly || null;
+    var years = this.state.years || null;
+    var penAcctId = this.state.penAcct || null;
+    var penAcct = PEN_ACCTS.filter(function (a) { return a.id === penAcctId; })[0] || null;
+    var penReady = !!(monthly && years && penAcct);
+    var chip = function (sel) {
+      return sel
+        ? { bg: tintC, border: accent, color: accent, weight: '700', pressed: 'true' }
+        : { bg: '#ffffff', border: '#e5e8eb', color: '#333d4b', weight: '500', pressed: 'false' };
+    };
+    var monthChips = [100000, 200000, 300000, 500000].map(function (v) {
+      var c = chip(v === monthly);
+      return { label: (v / 10000) + '만원', bg: c.bg, border: c.border, color: c.color, weight: c.weight, pressed: c.pressed, pick: function () { self.applyInput({ monthly: v }); } };
+    });
+    var yearChips = [5, 10, 15, 20].map(function (v) {
+      var c = chip(v === years);
+      return { label: v + '년', bg: c.bg, border: c.border, color: c.color, weight: c.weight, pressed: c.pressed, pick: function () { self.applyInput({ years: v }); } };
+    });
+    var remDigits = this.state.remAmount || '';
+    var remNum = remDigits ? parseInt(remDigits, 10) : 0;
+    var recipient = this.state.recipient || '';
+    var iban = this.state.iban || '';
+    var remFieldsOk = this.remFieldsValid(this.state);
+    var remDisabled = !remFieldsOk || !this.state.remAcct;
+    var backMap = { pay2: 'pay1', pen2: 'pen1', rem2: 'rem1', remc: 'rem2' };
+    var TRIG = {
+      '1': { pay1: 'A', pen2: 'B', rem3: 'C' },
+      '2': { pay2: 'A', pen3: 'B', rem1: 'C' },
+      '3': { done: 'A', pen1: 'B', rem2: 'C' }
+    };
+    var trigMap = TRIG[String(this.props.group ?? '0')] || {};
+    var inTrig = this.inputTrigInfo();
+    var nav = function (target, extra) {
+      var st = Object.assign({ screen: target, popOpen: null, terms: null }, extra || {});
+      var p = trigMap[target];
+      var shown = self.state.shown || {};
+      var isInput = !!(inTrig && target === inTrig.screen);
+      if (p && !isInput && !shown[p]) {
+        var sh = Object.assign({}, shown);
+        sh[p] = true;
+        st.popOpen = p;
+        st.shown = sh;
+      }
+      self.setState(st);
+    };
+    var showToast = function () {
+      clearTimeout(self._toast);
+      self.setState({ toast: true });
+      self._toast = setTimeout(function () { self.setState({ toast: false }); }, 2000);
+    };
+    var openTask = function (n, fn) {
+      return function () { if (task === n) { fn(); } else { showToast(); } };
+    };
+    var COUNTRIES = [
+      { code: 'US', name: '미국', cur: 'USD' },
+      { code: 'JP', name: '일본', cur: 'JPY' },
+      { code: 'EU', name: '유럽', cur: 'EUR' },
+      { code: 'CN', name: '중국', cur: 'CNY' },
+      { code: 'VN', name: '베트남', cur: 'VND' },
+      { code: 'AU', name: '호주', cur: 'AUD' },
+      { code: 'CA', name: '캐나다', cur: 'CAD' },
+      { code: 'GB', name: '영국', cur: 'GBP' },
+      { code: 'SG', name: '싱가포르', cur: 'SGD' },
+      { code: 'HK', name: '홍콩', cur: 'HKD' },
+      { code: 'PH', name: '필리핀', cur: 'PHP' },
+      { code: 'TH', name: '태국', cur: 'THB' },
+      { code: 'NZ', name: '뉴질랜드', cur: 'NZD' },
+      { code: 'ID', name: '인도네시아', cur: 'IDR' }
+    ];
+    var countryCode = this.state.country || null;
+    var curCountry = COUNTRIES.filter(function (c) { return c.code === countryCode; })[0] || null;
+    var mainCountries = COUNTRIES.slice(0, 6).map(function (c) {
+      return { name: c.name, cur: c.cur, pick: function () { nav('rem2', { country: c.code, recipient: '', iban: '', remAmount: '', remAcct: null }); } };
+    });
+    var countryList = COUNTRIES.map(function (c) {
+      var sel = c.code === countryCode;
+      return {
+        code: c.code, name: c.name, cur: c.cur,
+        selected: sel, pressed: sel ? 'true' : 'false',
+        bg: sel ? tintC : '#ffffff', check: accent,
+        pick: function () { nav('rem2', { country: c.code }); }
+      };
+    });
+    var POP = {
+      A: { title: '결제 계좌 잔액 확인하기', desc: '결제 계좌 잔액을 바로 확인해 보세요', cta: '잔액 확인하기' },
+      B: { title: '예상 연금 수령액 확인하기', desc: '내 예상 연금 수령액을 계산해 드려요', cta: '예상액 확인하기' },
+      C: { title: '해외송금 수수료 쿠폰 받기', desc: '다음 해외송금 1회 수수료가 면제돼요', cta: '쿠폰 받기' }
+    };
+    var RES = {
+      A: { title: '계좌를 연결했어요', desc: '다른 은행 계좌 잔액을 확인할 수 있어요', label: '(주)다른은행 123-456-789 잔액', value: '1,284,500원' },
+      B: { title: '예상 수령액을 계산했어요', desc: '다른 금융사 연금 정보를 합쳐 계산했어요', label: '55세부터 예상 연금', value: '월 약 48만 원' },
+      C: { title: '쿠폰을 받았어요', desc: '다음 해외송금 때 자동으로 적용돼요', label: '해외송금 수수료 면제 쿠폰', value: '1장' }
+    };
+    var TERMS = {
+      A1: { title: '오픈뱅킹 서비스 이용 동의', body: '수집 항목: 이름, 생년월일, 연결할 금융기관명과 계좌번호\n이용 목적: 오픈뱅킹을 통한 다른 금융기관 계좌 연결과 관리\n보유 기간: 서비스 해지 시까지 보관하고, 해지 후 바로 파기합니다' },
+      A2: { title: '계좌 정보 조회 동의', body: '수집 항목: 연결한 계좌의 잔액, 거래 내역, 계좌 상태\n이용 목적: 올머니 앱에서 계좌 잔액과 거래 내역 조회 제공\n보유 기간: 조회 동의 철회 시까지 보관하고, 철회 후 바로 파기합니다' },
+      A3: { title: '개인정보 제3자 제공 동의', body: '제공 항목: 이름, 생년월일, 연결할 계좌번호\n제공 목적: 잔액 조회를 위한 중계기관과 해당 은행의 본인 확인\n보유 기간: 제공 목적을 달성한 뒤 5년간 보관하고 파기합니다' },
+      B1: { title: '타 금융사 연금 정보 연결 동의', body: '수집 항목: 이름, 생년월일, 다른 금융사 연금 상품명과 계좌번호\n이용 목적: 다른 금융사 연금 정보를 연결해 예상 수령액 계산\n보유 기간: 연결 해지 시까지 보관하고, 해지 후 바로 파기합니다' },
+      B2: { title: '가입·납입 이력 수집 동의', body: '수집 항목: 연금 가입일, 월 납입금액, 누적 납입금액과 기간\n이용 목적: 가입·납입 이력을 바탕으로 예상 연금 수령액 산출\n보유 기간: 수집 동의 철회 시까지 보관하고, 철회 후 바로 파기합니다' },
+      B3: { title: '개인정보 제3자 제공 동의', body: '제공 항목: 이름, 생년월일, 연금 계좌번호\n제공 목적: 연금 정보 조회를 위한 중계기관과 해당 금융사의 본인 확인\n보유 기간: 제공 목적을 달성한 뒤 5년간 보관하고 파기합니다' },
+      C1: { title: '쿠폰 이용 약관 동의', body: '수집 항목: 이름, 변경할 출금 계좌번호, 쿠폰 발급 내역\n이용 목적: 해외송금 수수료 면제 쿠폰 발급과 다음 송금 시 적용\n보유 기간: 쿠폰 사용 또는 만료 후 1년간 보관하고 파기합니다' }
+    };
+    var openTerms = {};
+    Object.keys(TERMS).forEach(function (k) { openTerms[k] = function () { self.setState({ terms: k }); }; });
+    var termsKey = this.state.terms;
+    var terms = termsKey ? TERMS[termsKey] : null;
+    var popKey = this.state.popOpen;
+    var pop = popKey ? POP[popKey] : null;
+    var resKey = screen.indexOf('res') === 0 ? screen.slice(3) : null;
+    var res = resKey ? RES[resKey] : null;
+    var go = function (s) { return function () { nav(s); }; };
+    var due = this.addDays(now, 10);
+    var paid = this.state.paidAt ? new Date(this.state.paidAt) : now;
+    var arrA = this.addBizDays(now, 2), arrB = this.addBizDays(now, 3);
+    var arrival = arrA.getMonth() === arrB.getMonth()
+      ? (arrA.getMonth() + 1) + '월 ' + arrA.getDate() + '~' + arrB.getDate() + '일'
+      : this.md(arrA) + '~' + this.md(arrB);
+    var RESET = { amount: '', payAcct: null, monthly: null, years: null, penAcct: null, recipient: '', iban: '', country: null, remAmount: '', remAcct: null };
+    return {
+      accent: accent,
+      accentTint: tintC,
+      hidden: hidden,
+      showBalance: !hidden,
+      hideLabel: hidden ? '보기' : '숨기기',
+      toggleHide: function () { self.setState({ hidden: !hidden }); },
+      toast: showToast,
+      toastVisible: !!this.state.toast,
+      dueDate: this.md(due),
+      paidAtText: this.ymd(paid) + ' ' + this.pad2(paid.getHours()) + ':' + this.pad2(paid.getMinutes()),
+      firstTransfer: this.ymd(this.nextMonthSameDay(now)),
+      recentRemit: this.ymd(this.addDays(now, -34)),
+      arrivalRange: arrival,
+      isHome: screen === 'home',
+      isPay1: screen === 'pay1',
+      isPay2: screen === 'pay2',
+      isDone: screen === 'done',
+      goPay1: openTask(1, function () { nav('pay1'); }),
+      goPen1: openTask(2, function () { nav('pen1', { monthly: null, years: null, penAcct: null }); }),
+      goRem1: openTask(3, function () { nav('rem1', { recipient: '', iban: '', country: null, remAmount: '', remAcct: null }); }),
+      goPay2: function () { nav('pay2', { amount: '', payAcct: null }); },
+      goDone: function () { if (!payDisabled) { nav('done', { paidAt: Date.now() }); } },
+      goHome: function () {
+        var extra = Object.assign({}, RESET);
+        var finished = { done: 1, pen3: 2, rem3: 3 }[screen];
+        if (finished && finished === task) { extra.task = task + 1; }
+        nav('home', extra);
+      },
+      goBack: function () { nav(backMap[screen] || 'home'); },
+      isRem1: screen === 'rem1',
+      isRem2: screen === 'rem2',
+      isRem3: screen === 'rem3',
+      goRem2: function () { nav('rem2', { country: null, recipient: '', iban: '', remAmount: '', remAcct: null }); },
+      goRemC: go('remc'),
+      isRemC: screen === 'remc',
+      popVisible: !!pop,
+      popTitle: pop ? pop.title : '',
+      popDesc: pop ? pop.desc : '',
+      popCta: pop ? pop.cta : '',
+      closePop: function () { self.setState({ popOpen: null }); },
+      popGo: function () { if (popKey) { self.setState({ popOpen: null, screen: 'req' + popKey, reqReturn: screen }); } },
+      isReqA: screen === 'reqA',
+      isReqB: screen === 'reqB',
+      isReqC: screen === 'reqC',
+      reqBack: function () { nav(self.state.reqReturn || 'home'); },
+      reqAgree: function () { var k = screen.slice(3); self.setState({ screen: 'res' + k, terms: null }); },
+      isRes: !!res,
+      resTitle: res ? res.title : '',
+      resDesc: res ? res.desc : '',
+      resLabel: res ? res.label : '',
+      resValue: res ? res.value : '',
+      resDone: function () { nav(self.state.reqReturn || 'home'); },
+      openTerms: openTerms,
+      termsVisible: !!terms,
+      termsTitle: terms ? terms.title : '',
+      termsBody: terms ? terms.body : '',
+      closeTerms: function () { self.setState({ terms: null }); },
+      mainCountries: mainCountries,
+      countryList: countryList,
+      countryName: curCountry ? curCountry.name : '',
+      countryCur: curCountry ? curCountry.cur : '',
+      countryLabel: curCountry ? curCountry.name : '국가를 선택해 주세요',
+      countryCurLabel: curCountry ? curCountry.cur : '',
+      countryAria: curCountry ? '송금 국가 ' + curCountry.name + ', 바꾸기' : '송금 국가 선택하기',
+      countryBorder: curCountry ? '1.5px solid ' + accent : '1px solid #d1d6db',
+      countryBg: curCountry ? tintC : '#ffffff',
+      countryColor: curCountry ? '#191f28' : '#6b7684',
+      countryWeight: curCountry ? '600' : '400',
+      remAmountText: remDigits ? this.fmt(remNum) : '',
+      remAmountFull: this.fmt(remNum) + '원',
+      onRemAmount: function (e) {
+        var d = String((e && e.target && e.target.value) || '').replace(/\D/g, '').replace(/^0+/, '').slice(0, 10);
+        self.applyInput({ remAmount: d });
+      },
+      goRem3: function () { if (!remDisabled) { nav('rem3'); } },
+      recipient: recipient,
+      iban: iban,
+      onRecipient: function (e) { self.applyInput({ recipient: String((e && e.target && e.target.value) || '').slice(0, 40) }); },
+      onIban: function (e) { self.applyInput({ iban: String((e && e.target && e.target.value) || '').slice(0, 40) }); },
+      remAcctVisible: remFieldsOk,
+      remAcctList: acctItems(OTHER_ACCT, this.state.remAcct, 'remAcct'),
+      remDisabled: remDisabled,
+      remBtnBg: remDisabled ? '#e5e8eb' : accent,
+      remBtnFg: remDisabled ? '#8b95a1' : '#ffffff',
+      recipientName: recipient.trim() || 'Hong Gildong',
+      isPen1: screen === 'pen1',
+      isPen2: screen === 'pen2',
+      isPen3: screen === 'pen3',
+      goPen2: function () { nav('pen2', { monthly: null, years: null, penAcct: null }); },
+      goPen3: function () { if (penReady) { nav('pen3'); } },
+      monthChips: monthChips,
+      yearChips: yearChips,
+      showYears: !!monthly,
+      showPenAcct: !!(monthly && years),
+      monthlyText: monthly ? this.fmt(monthly) + '원' : '',
+      yearsText: years ? years + '년' : '',
+      penReady: penReady,
+      acctList: acctItems(PEN_ACCTS, penAcctId, 'penAcct'),
+      penAcctText: penAcct ? penAcct.name + ' ' + penAcct.num : '',
+      penDisabled: !penReady,
+      penBtnBg: penReady ? accent : '#e5e8eb',
+      penBtnFg: penReady ? '#ffffff' : '#8b95a1',
+      amountText: digits ? this.fmt(num) : '',
+      amountFull: this.fmt(num) + '원',
+      amountOk: !over,
+      amountOver: over,
+      amountLine: over ? '#d22030' : accent,
+      onAmount: function (e) {
+        var d = String((e && e.target && e.target.value) || '').replace(/\D/g, '').replace(/^0+/, '').slice(0, 9);
+        self.applyInput({ amount: d });
+      },
+      payAcctVisible: payAmountOk,
+      payAcctList: acctItems(OTHER_ACCT, this.state.payAcct, 'payAcct'),
+      payDisabled: payDisabled,
+      payBtnBg: payDisabled ? '#e5e8eb' : accent,
+      payBtnFg: payDisabled ? '#8b95a1' : '#ffffff'
+    };
+  }
+}
+(function () {
+  tpl = document.getElementById('tpl');
+  app = document.getElementById('app');
+  comp = new Component({"group": "2", "accent": "#0F7A6C", "startScreen": "home", "hideBalance": false});
+  render();
+  
+function fit() {
+  var w = window.innerWidth, h = window.innerHeight;
+  var phone = w <= 500;
+  var s = Math.min(w / 390, h / 844);
+  if (!phone) s = Math.min(s * 0.96, 1);
+  app.style.transform = 'scale(' + s + ')';
+  app.classList.toggle('phone', phone);
+}
+
+  fit();
+  window.addEventListener('resize', fit);
+})();
+</script>
+</body>
+</html>
